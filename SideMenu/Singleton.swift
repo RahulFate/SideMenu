@@ -122,6 +122,35 @@ class Singleton {
         return UIApplication.shared.delegate as! AppDelegate
     }
     
+    class func localizedLocalString(forKey key: String?) -> String? {
+        
+        var localizationBundle: Bundle?
+        var langCode = ""
+        
+        if (langCode == "") {
+            
+            let prefs = UserDefaults.standard
+            langCode = prefs.string(forKey: "AppleLanguages") ?? ""
+        }
+        
+        // path to this languages bundle
+        let langugageBundlepath = Bundle.main.path(forResource: langCode, ofType: "lproj")
+        
+        if langugageBundlepath == nil {
+            // there is no bundle for that language(new language) use main bundle instead
+            localizationBundle = Bundle.main
+        } else {
+            
+            localizationBundle = Bundle(path: langugageBundlepath ?? "")
+            if localizationBundle == nil {
+                localizationBundle = Bundle.main
+            }
+        }
+        
+        return localizationBundle?.localizedString(forKey: key ?? "", value: "", table: nil)
+    }
+
+    
     
 }
 
